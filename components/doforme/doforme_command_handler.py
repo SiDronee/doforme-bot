@@ -80,7 +80,25 @@ class DoForMeCommandHandler(CommandHandlerBase):
             .replace("[", "\\[")\
             .replace("`", "\\`")
 
+    # @show_typing
+    def _do_select_user_single(self, bot, message, user_data):
+        markup = InlineKeyboardMarkup(
+            [[InlineKeyboardButton(text=user_name, callback_data=f"user_id:{user_id}")]
+             for (user_id, user_name) in self.telegram_service.get_chat_users(bot, user_data['chat_id'])],
+            one_time_keyboard=True)
+        message.reply_text(self.texts['select-user'](user_data['title'], message.chat.first_name),
+                           reply_markup=markup, quote=False, parse_mode=telegram.ParseMode.MARKDOWN)
+
     def _do_select_user(self, bot, message, user_data):
+        markup = InlineKeyboardMarkup(
+            [[InlineKeyboardButton(text=self.texts['btn-do-group'], callback_data=f"do-group")],
+             [InlineKeyboardButton(text=self.texts['btn-do-single-user'], callback_data=f"do-single-user")]
+             ],
+            one_time_keyboard=True)
+        message.reply_text(self.texts['select-user'](user_data['title'], message.chat.first_name),
+                           reply_markup=markup, quote=False, parse_mode=telegram.ParseMode.MARKDOWN)
+
+    def _do_select_user_group(self, bot, message, user_data):
         markup = InlineKeyboardMarkup(
             [[InlineKeyboardButton(text=user_name, callback_data=f"user_id:{user_id}")]
              for (user_id, user_name) in self.telegram_service.get_chat_users(bot, user_data['chat_id'])],
@@ -184,7 +202,11 @@ class DoForMeCommandHandler(CommandHandlerBase):
             bot.send_message(
                 task.owner_id, task.description,
                 parse_mode=telegram.ParseMode.MARKDOWN)
-
+        elif data[0] == "do-group":
+            print('group')
+        elif data[0] == "do-single-user":
+            print('single user')
+            self._do_select_user_single(bot, update.callback_query.message, user_data)
         elif data[0] == "edit-due-deny":
             self._edit_due_deny(bot, data, update)
             self.telegram_service.remove_inline_keybaord(bot, update.callback_query)
