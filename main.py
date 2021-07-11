@@ -5,7 +5,6 @@ from common.texts import bot_name
 from common.utils.logging_tools import get_logger
 from common.utils.socket_app_lock import SocketAppLock
 
-test = ''
 
 def main():
     logger = get_logger()
