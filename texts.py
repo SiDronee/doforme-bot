@@ -2,7 +2,7 @@ bot_name = "RaptorTaskBot"
 
 texts = {
     'help': "Use\n"
-            f"/do [title] - Assign a task (First Line)\n"
+            f"/do [title] - Assign a task (first line)\n"
             f"[Description] (Start Description from the Second line, CTRL+Enter) \n"
             f"(private chat with the bot only)\n"
             f"/tasks - to list your duties\n"
