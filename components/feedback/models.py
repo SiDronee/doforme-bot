@@ -14,4 +14,5 @@ class Feedback(db.Entity):
     done = Optional(datetime)
 
 
+
 init_database(db)

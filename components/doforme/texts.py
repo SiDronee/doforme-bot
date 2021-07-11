@@ -3,7 +3,7 @@ from common.texts import bot_name
 texts = {
     'missing-title': lambda name: f"Please include a task title, {name}!",
     'select-chat': f"Which is the place of power?\nSelect below!",
-    'select-user': lambda title, name: f"Whom do you want to enslave doing {title} for you, {name}?\n"
+    'select-user': lambda title, name: f"Whom do you want to assign the task: {title}, {name}?\n"
                                        f"Select below!",
     'select-date': "Select a due date!",
     'added-task': lambda name, title: f"I burdened {name} with your request to {title}.",
@@ -26,6 +26,7 @@ texts = {
     'updated-task-requested': lambda user_name: f"I requested {user_name} to updated your task.",
     'btn-complete': "Complete",
     'btn-edit-date': "Edit date",
+    'btn-show-task': "Show task",
     'btn-accept': "Accept",
     'btn-deny': "Deny",
     'summary-headline': "Your open tasks",

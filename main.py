@@ -1,4 +1,4 @@
-import argparse
+﻿import argparse
 
 from init import create_bot
 from common.texts import bot_name
