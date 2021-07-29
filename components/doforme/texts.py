@@ -2,11 +2,11 @@ from common.texts import bot_name
 
 texts = {
     'missing-title': lambda name: f"Please include a task title, {name}!",
-    'select-chat': f"Which is the place of power?\nSelect below!",
-    'select-user': lambda title, name: f"Whom do you want to enslave doing {title} for you, {name}?\n"
+    'select-chat': f"which channel?\nSelect below!",
+    'select-user': lambda title, name: f"Who do you want to assign to do {title} for you, {name}?\n"
                                        f"Select below!",
     'select-date': "Select a due date!",
-    'added-task': lambda name, title: f"I burdened {name} with your request to {title}.",
+    'added-task': lambda name, title: f"The task {title} has been assigned to {name}.",
     'added-task-to-group':
         lambda owner_name, user_name, title, due: f"{owner_name} loaded {title} on {user_name}'s back" + (
             "" if not due else f", due {due.date()}") + ".",
@@ -22,7 +22,7 @@ texts = {
         f"{requestee_name} denied {requestor_name} to update the due date of {title} "
         f"from {prev_due.date()} to {due.date()}",
     'update-denied': "You denied the request.",
-    'update-granted': "You kindly accepted the request.",
+    'update-granted': "You accepted the request.",
     'updated-task-requested': lambda user_name: f"I requested {user_name} to updated your task.",
     'btn-complete': "Complete",
     'btn-edit-date': "Edit date",
@@ -66,7 +66,7 @@ texts = {
     'task-line-review-in-time': lambda in_time: f"in time!" if in_time else "a little late.",
     'task-line-review-incomplete': lambda title, user_name, owner_name, num_days: f"๏ {user_name} left {title} from {owner_name} open for already {num_days} day{'s' if num_days != 1 else ''}",
     'task-review-most-busy': lambda user_names, multiple:
-    "The most busy bee" + ("s" if multiple else "") + " of this week " + ("are" if multiple else "is") +
+    "The most busy Raptor" + ("s" if multiple else "") + " of this week " + ("are" if multiple else "is") +
     f" {user_names}!\nCongratulations!",
     'task-done': lambda title: f"I released you from the task {title}.",
     'task-done-to-group': lambda owner_name, user_name, title: f"{owner_name}: {user_name} completed {title}!",

@@ -99,12 +99,12 @@ class DoForMeCommandHandler(CommandHandlerBase):
                            reply_markup=markup, quote=False, parse_mode=telegram.ParseMode.MARKDOWN)
 
     def _do_select_user_group(self, bot, message, user_data):
-        markup = InlineKeyboardMarkup(
-            [[InlineKeyboardButton(text=user_name, callback_data=f"user_id:{user_id}")]
-             for (user_id, user_name) in self.telegram_service.get_chat_users(bot, user_data['chat_id'])],
-            one_time_keyboard=True)
-        message.reply_text(self.texts['select-user'](user_data['title'], message.chat.first_name),
-                           reply_markup=markup, quote=False, parse_mode=telegram.ParseMode.MARKDOWN)
+        print('_do_select_user_group')
+        for i in self.telegram_service.get_chat_users(bot, user_data['chat_id']):
+                 print(i)
+
+
+
 
     def _do_select_due(self, bot, message, user_data):
         reply = telegramcalendar.create_calendar(indicate_today=True)
@@ -200,12 +200,11 @@ class DoForMeCommandHandler(CommandHandlerBase):
         elif data[0] == "show-task":
             task = self.task_service.get_task(data[1])
             bot.send_message(
-                task.owner_id, task.description,
+                task.user_id, task.description,
                 parse_mode=telegram.ParseMode.MARKDOWN)
         elif data[0] == "do-group":
-            print('group')
+            self._do_select_user_group(bot, update.callback_query.message, user_data)
         elif data[0] == "do-single-user":
-            print('single user')
             self._do_select_user_single(bot, update.callback_query.message, user_data)
         elif data[0] == "edit-due-deny":
             self._edit_due_deny(bot, data, update)
