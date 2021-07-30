@@ -81,6 +81,17 @@ class DoForMeCommandHandler(CommandHandlerBase):
             .replace("`", "\\`")
 
     # @show_typing
+
+    def _do_select_user(self, bot, message, user_data):
+        markup = InlineKeyboardMarkup(
+            [[InlineKeyboardButton(text=self.texts['btn-do-group'], callback_data=f"user_id:0")],
+             [InlineKeyboardButton(text=self.texts['btn-do-single-user'], callback_data=f"do-single-user")]
+             ],
+            one_time_keyboard=True)
+        message.reply_text(self.texts['select-user'](user_data['title'], message.chat.first_name),
+                           reply_markup=markup, quote=False, parse_mode=telegram.ParseMode.MARKDOWN)
+
+
     def _do_select_user_single(self, bot, message, user_data):
         markup = InlineKeyboardMarkup(
             [[InlineKeyboardButton(text=user_name, callback_data=f"user_id:{user_id}")]
@@ -89,38 +100,52 @@ class DoForMeCommandHandler(CommandHandlerBase):
         message.reply_text(self.texts['select-user'](user_data['title'], message.chat.first_name),
                            reply_markup=markup, quote=False, parse_mode=telegram.ParseMode.MARKDOWN)
 
-    def _do_select_user(self, bot, message, user_data):
-        markup = InlineKeyboardMarkup(
-            [[InlineKeyboardButton(text=self.texts['btn-do-group'], callback_data=f"do-group")],
-             [InlineKeyboardButton(text=self.texts['btn-do-single-user'], callback_data=f"do-single-user")]
-             ],
-            one_time_keyboard=True)
-        message.reply_text(self.texts['select-user'](user_data['title'], message.chat.first_name),
-                           reply_markup=markup, quote=False, parse_mode=telegram.ParseMode.MARKDOWN)
 
-    def _do_select_user_group(self, bot, message, user_data):
-        for i in self.telegram_service.get_chat_users(bot, user_data['chat_id']):
-            print(i)
+    # def _do_select_user_group(self, bot, message, user_data):
+    #
+    #     # for i in self.telegram_service.get_chat_users(bot, user_data['chat_id']):
+    #     #     print(i)
 
 
 
 
     def _do_select_due(self, bot, message, user_data):
+        reply = telegramcalendar.create_calendar(indicate_today=True,)
+        message.reply_text(self.texts['select-date'], reply_markup=reply)
+
+    def _do_select_group_due(self, bot, message, user_data):
         reply = telegramcalendar.create_calendar(indicate_today=True)
         message.reply_text(self.texts['select-date'], reply_markup=reply)
 
     def _do_add_task(self, bot, message, user_data):
+        assign_to_group_task = user_data['user_id'] == 0
+        user_name = ""
+        chat_id = user_data['chat_id']
+        if assign_to_group_task:
+            for i in self.telegram_service.get_chat_users(bot, user_data['chat_id']):
+                user_data['user_id'] = i[0]
+                user_name = self._create_single_task(bot, message, user_data)
+        else:
+            user_name = self._create_single_task(bot, message, user_data)
+
+        # Will send the channel a message that a new task has been assigned
+        owner_user_name = self.telegram_service.get_mention(bot, message.chat.id, user_data['owner_id'])
+        user_name = user_name if not assign_to_group_task else self.texts['everybody']
+        bot.send_message(chat_id, self.texts['added-task-to-group'](owner_user_name,
+                                                                    user_name,
+                                                                    user_data['title'],
+                                                                    user_data['due']),
+                         parse_mode=telegram.ParseMode.MARKDOWN)
+
+    def _create_single_task(self, bot, message, user_data):
         user_id = user_data['user_id']
         chat_id = user_data['chat_id']
         user_name = self.telegram_service.get_mention(bot, chat_id, user_id)
         self.task_service.add_task(user_data)
+        # Will send the owner a message that the task has been assigned to the user
         message.reply_text(self.texts['added-task'](user_name, user_data['title']),
                            quote=False, parse_mode=telegram.ParseMode.MARKDOWN, reply_markup=ReplyKeyboardRemove())
-        owner_user_name = self.telegram_service.get_mention(bot, message.chat.id, user_data['owner_id'])
-        bot.send_message(chat_id, self.texts['added-task-to-group'](owner_user_name, user_name,
-                                                                    user_data['title'],
-                                                                    user_data['due']),
-                         parse_mode=telegram.ParseMode.MARKDOWN)
+        return user_name
 
     @show_typing
     def tasks_show(self, bot, update):
@@ -201,8 +226,6 @@ class DoForMeCommandHandler(CommandHandlerBase):
             bot.send_message(
                 task.user_id, task.description,
                 parse_mode=telegram.ParseMode.MARKDOWN)
-        elif data[0] == "do-group":
-            self._do_select_user_group(bot, update.callback_query.message, user_data)
         elif data[0] == "do-single-user":
             self._do_select_user_single(bot, update.callback_query.message, user_data)
         elif data[0] == "edit-due-deny":

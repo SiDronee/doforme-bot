@@ -2,6 +2,7 @@ from common.texts import bot_name
 
 texts = {
     'missing-title': lambda name: f"Please include a task title, {name}!",
+    'everybody': "everybody",
     'select-chat': f"which channel?\nSelect below!",
     'select-user': lambda title, name: f"Who do you want to assign to do {title} for you, {name}?\n"
                                        f"Select below!",
