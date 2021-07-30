@@ -99,9 +99,8 @@ class DoForMeCommandHandler(CommandHandlerBase):
                            reply_markup=markup, quote=False, parse_mode=telegram.ParseMode.MARKDOWN)
 
     def _do_select_user_group(self, bot, message, user_data):
-        print('_do_select_user_group')
         for i in self.telegram_service.get_chat_users(bot, user_data['chat_id']):
-                 print(i)
+            print(i)
 
 
 
