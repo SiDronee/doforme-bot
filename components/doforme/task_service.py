@@ -195,7 +195,10 @@ class TaskService:
     @db_use_utf8mb(db)
     @retry_on_error
     def delete_task_(self, task_id):
-        Task[task_id].delete()
+        try:
+            Task[task_id].delete()
+        except:
+            pass
 
 
     def _get_stats(self, tasks_query):
