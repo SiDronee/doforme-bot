@@ -39,5 +39,6 @@ class UserCommandHandler(CommandHandlerBase):
 
     def _register_user(self, chat_id, member, update):
         if self.user_service.add_user_chat_if_not_exists(member.id, chat_id):
-            update.message.reply_text(self.texts['user-welcome'](update.message.chat.title, member.first_name) +
-                                      "\n\n" + self.texts['help'])
+            update.message.reply_text(self.texts['user-welcome'](update.message.chat.title, member.first_name))
+                                      # +
+                                      # "\n\n" + self.texts['help'])
