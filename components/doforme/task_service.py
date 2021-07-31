@@ -191,6 +191,13 @@ class TaskService:
         Task[task_id].due = due
         commit()
 
+    @db_session
+    @db_use_utf8mb(db)
+    @retry_on_error
+    def delete_task_(self, task_id):
+        Task[task_id].delete()
+
+
     def _get_stats(self, tasks_query):
         return {
             'count': tasks_query.count(),
