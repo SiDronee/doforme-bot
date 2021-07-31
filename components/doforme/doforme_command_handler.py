@@ -220,6 +220,9 @@ class DoForMeCommandHandler(CommandHandlerBase):
                     parse_mode=telegram.ParseMode.MARKDOWN)
         elif data[0] == "edit-date":
             user_data['task_id'] = data[1]
+        elif data[0] == "delete-task":
+            task_id = int(data[1])
+            self.task_service.delete_task_(task_id)
             self._do_select_due(bot, update.callback_query.message, user_data)
         elif data[0] == "show-task":
             task = self.task_service.get_task(data[1])
