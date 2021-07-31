@@ -308,13 +308,14 @@ class DoForMeCommandHandler(CommandHandlerBase):
         return new_due, requestee_name, requestor_name, task
 
     def _get_chat_tasks(self, bot, chat_id):
+        reply_back = DoForMeCommandHandler._escape_text(self.texts['task-overview-private-chat'])
         tasks = [task for task in self.task_service.get_tasks_for_chat(chat_id) if not task.done]
         if len(tasks) < 1:
             return self.texts['no-tasks']
 
         return f"{self.texts['task-overview-group'](bot.getChat(chat_id).title)}:\n" \
-            f"{self._to_group_task_list(bot, tasks)}\n\n" \
-            f"{self.texts['task-overview-private-chat']}"
+               f"{self._to_group_task_list(bot, tasks)}\n\n" \
+               f"{reply_back}"
 
     def _get_assigned_task_markup(self, task):
         return InlineKeyboardMarkup(
