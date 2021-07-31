@@ -326,7 +326,8 @@ class DoForMeCommandHandler(CommandHandlerBase):
 
     def _get_owned_task_markup(self, task):
         return InlineKeyboardMarkup(
-            [[InlineKeyboardButton(text=self.texts['btn-edit-date'], callback_data=f"edit-date:{task.id}")]],
+            [[InlineKeyboardButton(text=self.texts['btn-edit-date'], callback_data=f"edit-date:{task.id}"),
+              InlineKeyboardButton(text=self.texts['btn-del-task'], callback_data=f"delete-task:{task.id}")]],
             one_time_keyboard=True)
 
     def _get_stats_message(self, stats):
