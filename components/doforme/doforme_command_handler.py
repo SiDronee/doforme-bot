@@ -172,8 +172,10 @@ class DoForMeCommandHandler(CommandHandlerBase):
         if len(tasks) < 1:
             update.message.reply_text(self.texts['no-tasks'])
         for task in tasks:
-            task_summary = self.texts['task-line-summary'](task, bot.getChat(task.chat_id).title,
+            task_summary = self.texts['task-line-summary'](task,
+                                                           bot.getChat(task.chat_id).title,
                                                            bot.getChatMember(task.chat_id, task.user_id).user.name)
+            task_summary = DoForMeCommandHandler._escape_text(task_summary)
             markup = self._get_owned_task_markup(task)
             update.message.reply_text(task_summary, reply_markup=markup, parse_mode=telegram.ParseMode.MARKDOWN)
 
